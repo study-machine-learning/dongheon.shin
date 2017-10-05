@@ -1,0 +1,247 @@
+[라이브러리]
+
+1. urllib
+
+- 바로 다운로드 : urllib.request.urlretrieve(url, filename)
+- 커넥션 열기 : urllib.request.urlopen(url)
+- 파라미터 파싱 : urllib.parse.urlencode(dict)
+
+2. urljoin
+
+- 경로 연결 : urljoin(base, path)
+
+  - // : base의 프로토콜을 따라감
+  - 경로
+
+    - /로 시작하면 도메인부터 연결
+    - .. 등으로 상위 경로 이동 가능
+
+3. beautifulsoup
+
+- 파싱
+
+  - 텍스트 직접 제공 : content = BeautifulSoup(html, parser_type)
+
+- 엘리먼트
+
+  - 동적으로 프로퍼티가 제공되므로 직접 접근, 메서드 체이닝 제공
+  - DOM Traverse : previous / next 시리즈
+  - 한정자 접근
+
+    - 태그로 선택 : content.find_all("...", [condition])
+    - ID로 선택 : content.find(id="...", [condition])
+    - 속성으로 선택 : content.find_all(href="...", [condition])
+    - CSS 선택자로 선택
+
+      - 단일 선택 : content.select_one(selector)
+      - 복수 선택 : content.select(selector)
+
+- 속성 접근 : attrs[key]로 접근
+
+4. requests
+
+- 연결에 대한 세션 생성 : session = requests.session()
+- 요청
+
+  - GET : session.get(url)
+  - POST : session.post(url, form)
+
+5. selenium
+
+- 브라우저 선택 : browser = webdriver.PhantomJS() (FireFox | Chrome | Ie | Opera | Remote)
+- 스크레이핑 요소
+
+  - 엘리먼트 선택 : 선택 실패 시, NoSuchElementException 발생
+
+    - 태그 이름으로 선택 : el = browser.find_element(s)_by_tag_name(tag)
+    - ID로 선택 : el = browser.find_element_by_id(id)
+    - 클래스로 선택 : el = browser.find_element(s)_by_class(class)
+    - 이름으로 선택 : el = browser.find_element(s)_by_name(name)
+    - CSS 선택자로 선택 : el = browser.find_elements_by_css_selector(selector)
+
+  - 엘리먼트가 제공하는 주요 프로퍼티
+
+    - 태그 이름 : tag_name
+    - 아이디 : id
+    - 내부 글자 : text
+    - 부모 : parent
+    - 위치 : location
+    - 영역 : rect
+    - 스크린샷 : screenshot_as_png / screenshot_as_base64
+
+  - 액션
+
+    - 엘리먼트 내용 지우기 : el.clear()
+    - 스크린샷 : el.screenshot(filename)
+    - 클릭 : el.click()
+    - 폼 전송 : form.submit()
+    - 텍스트 입력 : el.send_keys(content)
+
+      - from selenium.Webdriver.common.keys import Keys
+      - 제공하는 키 목록
+
+        - ARROW_UP / ARROW_DOWN / ARROW_LEFT / ARROW_RIGHT
+        - ALT / COMMAND / CONTROL / SHIFT
+        - BACKSPACE / HOME / END / INSERT / DELETE
+        - F1 / F2 / F3 / ... / F12
+
+  - 엘리먼트 속성 가져오기
+
+    - 기본 : attr = el.get_attribute(name)
+    - 상태 체크 메서드
+
+      - displayed = el.is_displayed()
+      - checked = el.is_checked()
+      - selected = el.is_selected()
+
+  - PhantomJS 전용 드라이버를 사용하여 브라우저 조작
+
+    - 페이지 이동 : browser.back() or browser.forward()
+    - 브라우저 닫기 : browser.close()
+    - 대기 : browser.implicitly_wait(time)
+    - 스크립트
+
+      - 동기 : execute_script(script, *args)
+      - 비동기 : execute_async_script(script, *args)
+
+    - 쿠키
+
+      - 추가 : browser.add_cookie(cookie_dict)
+      - 획득
+
+        - browser.get_cookie(name)
+        - browser.get_cookies()
+
+      - 제거
+
+        - browser.delete_cookie(name)
+        - browser.delete_all_cookies()
+
+    - 윈도우
+
+      - 크기
+
+        - 조회 : browser.get_window_size(windowHandle='current')
+        - 지정 : browser.set_window_size(w, h, windowHandle='current')
+
+      - 위치
+
+        - 조회 : browser.get_window_position(windowHandle='current')
+        - 지정 : browser.set_window_position(x, y, windowHandle='current')
+
+    - 스크린샷
+
+      - 저장 : browser.save_screenshot(filename)
+      - 추출 : browser.get_screenshot_as_base64() or browser.get_screenshot_as_png() or browser.get_screenshot_as_file(filename)
+
+6. json
+
+- JSON 문자열을 객체로 변경 : json.loads(json_text)
+- 객체 타입을 JSON 문자열로 변경
+
+   - json.dumps(value)
+   - json.dumps(value, fp)
+
+7. pyyaml
+
+- YAML 문자열을 객체로 변경 : yaml.load(yaml_text)
+- 객체 타입을 YAML 문자열로 변경 : yaml.dump(value)
+
+8. csv
+
+- 불러오기 : csv = csv.reader(fp, delimiter=",", quotechar='"')
+- 저장하기 : csv.writer(fp, delimiter=",", quotechar='"').writerow(row)
+
+9. openpyxl
+
+- 워크북 : book = openpyxl.load_workbook(filename)
+- 워크시트 : sheet = book.worksheets[n]
+- 행 접근 : sheet.rows
+
+10. pandas
+
+- 개요
+
+  - 파이썬 기반의 데이터분석 라이브러리로, Panel Data에서 유래됨
+  - 엑셀에 데이터를 쓰려면 xlrd 모듈을 필요로 함
+
+- 함수
+
+  - CSV 데이터 읽어오기 : data = pandas.read_csv(filename, column_index)
+  - 엑셀 시트 읽어오기 : book = pandas.read_excel(filename, sheetname, header_index)
+  - 워크북 저장 : book.save(filename)
+  - 데이터 프레임
+
+    - 개요 : PANDAS에서 데이터 묶음을 표현하는 단위로 사용
+    - 선언 : index, series = frame = pandas.DataFrame(dict, index=list)
+    - 그래프 그리기 : frame.plot(kind=str, subplots=boolean, ylim=tuple)
+
+11. struct
+
+- 개요
+
+  - C 언어의 구조체를 파이썬의 문자열로 처리할 수 있는 기능을 제공
+  - 주어진 포맷대로 읽어내는 것이 특징
+
+- 메서드
+
+  - 구조체 -> 문자열 : struct.pack(fmt, v1, v2, ...)
+  - 문자열 -> 구조체 : struct.unpack(fmt, str)
+
+- 포맷
+
+  - h (H) : short (unsigned)
+  - i (I) : int (unsigned)
+  - l (L) : long (unsigned)
+  - b (B) : binary (unsigned)
+  - c : char
+  - f : float
+  - d : double
+  - > / < : big / little endian
+
+12. scikit-learn
+
+  - 개요
+
+    - 다양한 분류기를 지원하며 검증 기능도 제공하는 머신러닝 라이브러리
+    - 분류, 회귀, 클러스터링, 차원 축소 등의 알고리즘 지원
+
+  - 모듈
+
+    - SCV
+
+      - 학습 객체 생성 : classifier = svm.SVC() (SVR | LinearSVC | LinearSVR | NuSVC | NuSVR)
+      - 학습 : classifier.fit(data, label)
+      - 예측 : res = classifier.predict(data)
+
+    - metrics
+
+      - 측정 결과 점수 : score = metrics.accuracy_score(labels, res)
+      - 리포트 : report = metrics.classification_report(labels, res)
+
+    - model_selection
+
+      - 학습 / 테스트 데이터 분할 : train_data, test_data, train_label, test_label = model_selection.train_test_split(data, label)
+      - 교차 검증 점수 : scores = model_selection.cross_val_score(classifier, data, labels, cv)
+
+    - joblib
+
+      - 학습 내용 저장 : joblib.dump(classifier, path)
+      - 데이터 불러오기 : classifier = joblib.load(pkl)
+
+    - grid_search (deprecated)
+
+      - 최적의 매개변수를 조사하는 방법 : classifier = GridSearchCV(svm.SVC(), params, n_jobs)
+
+13. matplotlib
+
+- 스타일 지정 : matplotlib.pyplot.use(style)
+- 스크린샷 저장 : matplotlib.pyplot.savefig(filename)
+- 그래프 선언 : figure = pyplot.figure()
+- 보조 그래프 선언 : aux = figure.add_subplot(...)
+
+99. 기타 함수
+
+- 그룹화 : re.match(regex).group()
+- ASCII 코드 반환 : ord(str)
+- 패턴에 맞는 파일 읽어들이기 : glob.glob(pattern)
