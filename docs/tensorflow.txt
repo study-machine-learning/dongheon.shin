@@ -1,0 +1,121 @@
+[Tensorflow]
+
+1. 기본
+
+- 개요
+
+  - 텐서플로우는 기본적으로 연산을 직접 수행하지 않고 계산식을 정의한 후 세션에 수행을 위임하는 구조
+
+    a = tf.constant(1234)
+    b = tf.constant(5000)
+
+    # 'add = 6234'가 아니라 'a + b' 연산을 기록
+    add = a + b
+
+    # 세션을 생성하고 계산식을 전달하여 수행
+    session = tf.Session()
+    result = session.run(add)
+
+  - 선언 가능한 요소에 대해서 이름을 부여하는 것이 가능하나, _로 시작하는 이름은 선언할 수 없음
+
+- 변수 / 상수
+
+  - 상수 : const = tf.constant(value, [name=str])
+  - 변수 : var = tf.Variable(value, [name=str])
+  - 값 할당 : assign_operation = tf.assign(target, operation)
+
+- 세션
+
+  - 세션 시작 : session = tf.Session()
+  - 세션에 등록된 변수 초기화 : session.run(tf.global_variables_initializer())
+  - 세션 실행 : session.run([operations], [feed_dict=dict])
+
+- 플레이스 홀더
+
+  - 템플릿으로 연산을 정의하고 값을 넣어 세션 실행 시에 값을 부여하는 방식으로 구현 가능
+  - 선언 : holder = tf.placeholder(type, [shape], [name=str])
+
+    - shape는 플레이스 홀더의 형태를 의미하며, type은 플레이스 홀더를 구성하는 요소의 타입으로 tensorflow 패키지에 정의되어 있음
+    - 세션 실행 시에 전달되는 feed_dict의 키와 플레이스 홀더의 이름이 동일해야 정상적으로 동작함
+
+- 연산
+
+  - 행렬
+
+    - 0 행렬 : tf.zeros(shape, [type], [name])
+    - 1 행렬 : tf.ones(shape, [type], [name])
+    - 행렬 곱셈 : tf.matmul(x, y)
+    - 형식 변경 : tf.reshape(values, shape)
+
+  - 산술
+
+    - 최대값 반환 : tf.argmax(values)
+    - 비교 : tf.equal(x, y)
+
+  - 리듀스
+
+    - 평균 : tf.reduce_mean(values, [axis=int]) (0 - column, 1 - row)
+    - 합계 : tf.reduce_sum(values)
+
+  - 기타
+
+    - 타입 캐스팅 : tf.cast(value, type)
+    - 절단 정규 분포를 따르는 난수 행렬 생성 : tf.truncated_normal(shape, mean, stddev, dtype)
+
+2. 신경망
+
+- 계층
+
+  - 컨볼루션 계층 : tf.nn.conv2d(values, filter, strides, padding)
+
+  - 풀링 계층
+
+    - 최대 풀링 : tf.nn.max_pool(values, ksize, strides, padding)
+    - 평균 풀링 : tf.nn.avg_pool(values, ksize, strides, padding)
+
+  - 파라미터 분석
+
+    - values : 컨볼루션 계층에 입력되는 데이터
+    - filter : 필터, 컨볼루션 커널
+    - ksize : 커널 사이즈 - 입력 형식과 동일해야 함
+    - strides : 필터의 이동 거리, strides[0] = strides[3] = 1 (cf. https://www.tensorflow.org/versions/master/api_docs/python/tf/nn/conv2d)
+    - padding : 필터가 입력 범위를 넘었을 때 채울 데이터 전략
+
+- 드롭아웃 : tf.nn.dropout(x, keep_prob)
+
+- 학습 알고리즘 선택
+
+  - 경사 하강법 : optimizer = tf.train.GradientDescentOptimizer(learning_rate)
+  - Adam 알고리즘 : optimzer = tf.train.AdamOptimizer(learning_rate)
+
+- 학습 : train_operation = optimizer.minimize()
+
+- 활성화 함수
+
+  - ReLu : tf.nn.relu(values)
+  - Softmax : tf.nn.softmax(values)
+
+- 오차 판정
+
+  - MSE : tf.losses.mean_squared_error(values, predictions)
+  - Cross Entropy
+
+    - 직접 계산 : -tf.reduce_sum(y_ * tf.log(y))
+    - 텐서플로우 API : tf.nn.softmax_cross_entropy_with_logits(labels, logits)
+
+3. Tensorboard
+
+- 기본
+
+  - 텐서플로우의 실행 로그를 기반으로 연산 모델을 시각화하는 도구
+  - 디렉토리에 여러 로그가 있어도 가장 최신의 로그를 기준으로 보여주며, 서브 디렉토리는 별도 데이터로 취급
+
+- 실행
+
+  - 시각화에 필요한 로그 데이터 저장 : tf.summary.FileWriter(filepath, graph=sess.graph) (tf.train.SummaryWriter is deprecated)
+  - 프로그램 구동 : tensorboard --logdir [dirpath]
+
+- 시각화
+
+  - 상수, 변수, 플레이스 홀더 및 연산에 이름을 부여하면 레이블링이 되어 보기 편해짐
+  - 스코프 지정 : with tf.name_scope(name) as scope:

@@ -1,0 +1,32 @@
+[Keras]
+
+1. 기본
+
+- 개요
+
+  - 고수준의 API를 제공하는 머신러닝 라이브러리로, 간단한 테스트나 프로토타이핑에 용이함
+  - Tensorflow, Theano, CNTK 등을 래핑하여 추상화했기 때문에 코드 수정 없이 기반 기술 변경이 가능함
+
+- 모델
+
+  - 선언
+
+    - 순차 모델 : model = Sequential()
+    - 사용자 정의 모델 : model = Model(inputs=Input, outputs=Dense)
+
+  - 컴파일 : model.compile(loss=str, optimizer=str|optimizer, metrics=array)
+
+- 학습 : history = model.fit(train_data, train_labels)
+- 평가 : loss, accuracy = score = model.evaluate(test_data, test_labels)
+
+2. 신경망
+
+- 계층
+
+  - 선언
+
+    - 형식 : layer = Dense(features, [input_shape=shape])
+    - 특징 : 입력층에서는 입력 데이터에 대한 형태를 제공해야 하나, 이후부터는 생략 가능함
+
+- 활성화 함수 : activation = Activation(activation=str)
+- 드롭아웃 : dropout = Dropout(drop_rate)
